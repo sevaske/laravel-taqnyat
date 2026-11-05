@@ -1,0 +1,89 @@
+{
+    "name": "sevaske/laravel-taqnyat",
+    "description": "Laravel integration for the Taqnyat SMS API (taqnyat.sa): facade, notification channel, templates from config, test fake and artisan commands.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "taqnyat",
+        "taqnyat.sa",
+        "sms",
+        "notifications",
+        "notification channel",
+        "saudi arabia",
+        "ksa"
+    ],
+    "homepage": "https://github.com/sevaske/laravel-taqnyat",
+    "support": {
+        "issues": "https://github.com/sevaske/laravel-taqnyat/issues",
+        "source": "https://github.com/sevaske/laravel-taqnyat"
+    },
+    "authors": [
+        {
+            "name": "Sevak Mnatcakanian",
+            "email": "sevachello@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "guzzlehttp/guzzle": "^7.2 || ^8.0",
+        "guzzlehttp/psr7": "^2.0 || ^3.0",
+        "illuminate/console": "^8.83 || ^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "illuminate/contracts": "^8.83 || ^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "illuminate/notifications": "^8.83 || ^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^8.83 || ^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "sevaske/taqnyat-api": "^1.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^9.5.10 || ^10.1 || ^11.0 || ^12.0 || ^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sevaske\\LaravelTaqnyat\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sevaske\\LaravelTaqnyat\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sevaske\\LaravelTaqnyat\\TaqnyatServiceProvider"
+            ],
+            "aliases": {
+                "Taqnyat": "Sevaske\\LaravelTaqnyat\\Facades\\Taqnyat"
+            }
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "analyse": "phpstan analyse --memory-limit=1G",
+        "pint:install": "@composer --working-dir=tools/pint install --no-interaction",
+        "format": "tools/pint/vendor/bin/pint",
+        "format:check": "tools/pint/vendor/bin/pint --test",
+        "check": [
+            "@analyse",
+            "@test"
+        ]
+    },
+    "scripts-descriptions": {
+        "test": "Run PHPUnit tests",
+        "analyse": "Run PHPStan static analysis",
+        "pint:install": "Install Laravel Pint into tools/pint (requires PHP 8.3+)",
+        "format": "Format the code with Laravel Pint",
+        "format:check": "Check code style with Laravel Pint without changing files",
+        "check": "Run static analysis and tests"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": false
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

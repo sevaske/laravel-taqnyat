@@ -1,0 +1,7 @@
+parameters:
+    level: max
+    paths:
+        - src
+        - config
+    # Public API validates PHPDoc-typed arguments at runtime for users without static analysis.
+    treatPhpDocTypesAsCertain: false
