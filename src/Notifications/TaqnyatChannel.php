@@ -26,21 +26,16 @@ final class TaqnyatChannel
 {
     public const NAME = 'taqnyat';
 
-    private Taqnyat $taqnyat;
-
-    public function __construct(Taqnyat $taqnyat)
-    {
-        $this->taqnyat = $taqnyat;
-    }
+    public function __construct(
+        private readonly Taqnyat $taqnyat,
+    ) {}
 
     /**
-     * @param mixed $notifiable
-     *
      * @return SendSmsResponse|null null when the notifiable has no phone number
      *
      * @throws TaqnyatException
      */
-    public function send($notifiable, Notification $notification): ?SendSmsResponse
+    public function send(mixed $notifiable, Notification $notification): ?SendSmsResponse
     {
         $message = $this->getMessage($notifiable, $notification);
 
@@ -61,15 +56,10 @@ final class TaqnyatChannel
         return $this->taqnyat->send($smsMessage);
     }
 
-    /**
-     * @param mixed $notifiable
-     *
-     * @return TaqnyatMessage|SmsMessage
-     */
-    private function getMessage($notifiable, Notification $notification)
+    private function getMessage(mixed $notifiable, Notification $notification): TaqnyatMessage|SmsMessage
     {
         if (!method_exists($notification, 'toTaqnyat')) {
-            $message = sprintf('Notification %s must define a toTaqnyat($notifiable) method.', get_class($notification));
+            $message = sprintf('Notification %s must define a toTaqnyat($notifiable) method.', $notification::class);
 
             throw new InvalidArgumentException($message);
         }
@@ -86,7 +76,7 @@ final class TaqnyatChannel
 
         $errorMessage = sprintf(
             '%s::toTaqnyat() must return a string, %s or %s.',
-            get_class($notification),
+            $notification::class,
             TaqnyatMessage::class,
             SmsMessage::class,
         );
@@ -97,12 +87,8 @@ final class TaqnyatChannel
     /**
      * Phone number(s) of the notifiable. On-demand notifications may be routed
      * either by the channel name ('taqnyat') or by the channel class.
-     *
-     * @param mixed $notifiable
-     *
-     * @return mixed
      */
-    private function getRoute($notifiable, Notification $notification)
+    private function getRoute(mixed $notifiable, Notification $notification): mixed
     {
         if (!is_object($notifiable) || !method_exists($notifiable, 'routeNotificationFor')) {
             return null;
@@ -119,10 +105,7 @@ final class TaqnyatChannel
         return null;
     }
 
-    /**
-     * @param mixed $route
-     */
-    private static function isEmptyRoute($route): bool
+    private static function isEmptyRoute(mixed $route): bool
     {
         return $route === null || $route === '' || $route === [];
     }
@@ -130,11 +113,9 @@ final class TaqnyatChannel
     /**
      * Accepts a single phone number or a list of them; each one is validated later by SmsMessage.
      *
-     * @param mixed $recipients
-     *
      * @return list<string|int|PhoneNumber>
      */
-    private static function toRecipientList($recipients, Notification $notification): array
+    private static function toRecipientList(mixed $recipients, Notification $notification): array
     {
         if (!is_iterable($recipients)) {
             $recipients = [$recipients];
@@ -148,7 +129,7 @@ final class TaqnyatChannel
             if (!$isPhoneNumber) {
                 $message = sprintf(
                     'Recipients of %s must be phone numbers (string, int or %s).',
-                    get_class($notification),
+                    $notification::class,
                     PhoneNumber::class,
                 );
 
@@ -188,12 +169,12 @@ final class TaqnyatChannel
 
     private function renderBody(TaqnyatMessage $message): string
     {
-        if (!$message->hasTemplate()) {
+        $template = $message->getTemplate();
+
+        if ($template === null) {
             return $message->getContent();
         }
 
-        $template = $this->taqnyat->template($message->getTemplate());
-
-        return $template->render($message->getTemplateParameters());
+        return $this->taqnyat->template($template)->render($message->getTemplateParameters());
     }
 }

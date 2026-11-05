@@ -11,10 +11,7 @@ use Sevaske\Taqnyat\Message\SmsMessage;
  */
 final class MessageSending
 {
-    public SmsMessage $message;
-
-    public function __construct(SmsMessage $message)
-    {
-        $this->message = $message;
-    }
+    public function __construct(
+        public readonly SmsMessage $message,
+    ) {}
 }

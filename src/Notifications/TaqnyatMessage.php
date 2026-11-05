@@ -22,12 +22,7 @@ use Sevaske\Taqnyat\Template\Template;
  */
 final class TaqnyatMessage
 {
-    private string $content;
-
-    /**
-     * @var Template|string|null
-     */
-    private $template = null;
+    private Template|string|null $template = null;
 
     /**
      * @var array<string, mixed>
@@ -39,16 +34,15 @@ final class TaqnyatMessage
     /**
      * @var iterable<string|int|PhoneNumber>|string|int|PhoneNumber|null
      */
-    private $recipients = null;
+    private iterable|string|int|PhoneNumber|null $recipients = null;
 
     private ?\DateTimeInterface $scheduledAt = null;
 
     private ?int $deleteId = null;
 
-    public function __construct(string $content = '')
-    {
-        $this->content = $content;
-    }
+    public function __construct(
+        private string $content = '',
+    ) {}
 
     public static function create(string $content = ''): self
     {
@@ -71,7 +65,7 @@ final class TaqnyatMessage
      * @param Template|string      $template   template name from config("taqnyat.templates") or a Template instance
      * @param array<string, mixed> $parameters placeholder values
      */
-    public function template($template, array $parameters = []): self
+    public function template(Template|string $template, array $parameters = []): self
     {
         $this->template = $template;
         $this->templateParameters = $parameters;
@@ -94,7 +88,7 @@ final class TaqnyatMessage
      *
      * @param iterable<string|int|PhoneNumber>|string|int|PhoneNumber $recipients
      */
-    public function to($recipients): self
+    public function to(iterable|string|int|PhoneNumber $recipients): self
     {
         $this->recipients = $recipients;
 
@@ -126,10 +120,7 @@ final class TaqnyatMessage
         return $this->content;
     }
 
-    /**
-     * @return Template|string|null
-     */
-    public function getTemplate()
+    public function getTemplate(): Template|string|null
     {
         return $this->template;
     }
@@ -155,7 +146,7 @@ final class TaqnyatMessage
     /**
      * @return iterable<string|int|PhoneNumber>|string|int|PhoneNumber|null
      */
-    public function getRecipients()
+    public function getRecipients(): iterable|string|int|PhoneNumber|null
     {
         return $this->recipients;
     }

@@ -11,22 +11,16 @@ final class User
     use Notifiable;
 
     /**
-     * @var string|list<string>|null
-     */
-    public $phone;
-
-    /**
      * @param string|list<string>|null $phone
      */
-    public function __construct($phone)
-    {
-        $this->phone = $phone;
-    }
+    public function __construct(
+        public string|array|null $phone,
+    ) {}
 
     /**
      * @return string|list<string>|null
      */
-    public function routeNotificationForTaqnyat()
+    public function routeNotificationForTaqnyat(): string|array|null
     {
         return $this->phone;
     }

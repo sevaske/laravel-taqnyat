@@ -5,7 +5,7 @@
     ],
     "rules": {
         "trailing_comma_in_multiline": {
-            "elements": ["arrays", "arguments"]
+            "elements": ["arrays", "arguments", "parameters", "match"]
         },
         "declare_strict_types": true,
         "no_unused_imports": true,

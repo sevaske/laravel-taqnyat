@@ -255,7 +255,14 @@ Taqnyat::fake()->throwOnSend(new AuthenticationException('invalid credentials in
 ```
 
 The fake covers the facade, the `Taqnyat` service, the notification channel and the `SmsSender` contract.
-Other endpoints (`balance()`, `senders()`...) and a directly injected `Sevaske\Taqnyat\Client` are not faked.
+Other endpoints (`balance()`, `senders()`...) and a directly injected `Sevaske\Taqnyat\Client` are not faked;
+mock the facade for them instead:
+
+```php
+use Sevaske\Taqnyat\Response\BalanceResponse;
+
+Taqnyat::shouldReceive('balance')->once()->andReturn(BalanceResponse::fromArray(['balance' => '100.00']));
+```
 
 ## Customizing the HTTP client
 

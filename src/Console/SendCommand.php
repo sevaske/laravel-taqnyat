@@ -109,11 +109,9 @@ final class SendCommand extends TaqnyatCommand
     }
 
     /**
-     * @param mixed $value
-     *
      * @return list<string>
      */
-    private static function toStringList($value): array
+    private static function toStringList(mixed $value): array
     {
         if (!is_array($value)) {
             return [];

@@ -12,37 +12,29 @@ use Illuminate\Notifications\Notification;
 final class SmsNotification extends Notification
 {
     /**
-     * @var callable(mixed): mixed
+     * @var \Closure(mixed): mixed
      */
-    private $factory;
-
-    private string $channel;
+    private \Closure $factory;
 
     /**
      * @param callable(mixed): mixed $factory
      */
-    public function __construct(callable $factory, string $channel = 'taqnyat')
-    {
-        $this->factory = $factory;
-        $this->channel = $channel;
+    public function __construct(
+        callable $factory,
+        private readonly string $channel = 'taqnyat',
+    ) {
+        $this->factory = $factory(...);
     }
 
     /**
-     * @param mixed $notifiable
-     *
      * @return list<string>
      */
-    public function via($notifiable): array
+    public function via(mixed $notifiable): array
     {
         return [$this->channel];
     }
 
-    /**
-     * @param mixed $notifiable
-     *
-     * @return mixed
-     */
-    public function toTaqnyat($notifiable)
+    public function toTaqnyat(mixed $notifiable): mixed
     {
         return ($this->factory)($notifiable);
     }

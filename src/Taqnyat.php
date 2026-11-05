@@ -27,25 +27,11 @@ use Sevaske\Taqnyat\Template\TemplateRegistry;
  * Laravel-friendly entry point to Taqnyat: default sender, templates from config and events.
  *
  * Usually used through the {@see \Sevaske\LaravelTaqnyat\Facades\Taqnyat} facade.
+ *
+ * Not final only so that the facade can be mocked (Taqnyat::shouldReceive()); not meant to be extended.
  */
-final class Taqnyat implements SmsSender
+class Taqnyat implements SmsSender
 {
-    /**
-     * @var Closure(): SmsSender
-     */
-    private Closure $smsSenderResolver;
-
-    /**
-     * @var Closure(): Client
-     */
-    private Closure $clientResolver;
-
-    private TemplateRegistry $templates;
-
-    private ?string $defaultSender;
-
-    private ?Dispatcher $events;
-
     /**
      * Both dependencies are resolved lazily, on every use, so that:
      *  - the service can be resolved without a configured token (e.g. when sending is faked in tests);
@@ -55,18 +41,12 @@ final class Taqnyat implements SmsSender
      * @param Closure(): Client    $clientResolver    returns the API client for the other endpoints
      */
     public function __construct(
-        Closure $smsSenderResolver,
-        Closure $clientResolver,
-        TemplateRegistry $templates,
-        ?string $defaultSender = null,
-        ?Dispatcher $events = null
-    ) {
-        $this->smsSenderResolver = $smsSenderResolver;
-        $this->clientResolver = $clientResolver;
-        $this->templates = $templates;
-        $this->defaultSender = $defaultSender;
-        $this->events = $events;
-    }
+        private readonly Closure $smsSenderResolver,
+        private readonly Closure $clientResolver,
+        private readonly TemplateRegistry $templates,
+        private readonly ?string $defaultSender = null,
+        private readonly ?Dispatcher $events = null,
+    ) {}
 
     /**
      * Sends a message and dispatches {@see MessageSending} and {@see MessageSent} events.
@@ -92,7 +72,7 @@ final class Taqnyat implements SmsSender
      *
      * @throws TaqnyatException
      */
-    public function sendText($recipients, string $body, ?string $sender = null): SendSmsResponse
+    public function sendText(iterable|string|int|PhoneNumber $recipients, string $body, ?string $sender = null): SendSmsResponse
     {
         $message = $this->message($recipients, $body, $sender);
 
@@ -109,8 +89,12 @@ final class Taqnyat implements SmsSender
      *
      * @throws TaqnyatException
      */
-    public function sendTemplate($recipients, $template, array $parameters = [], ?string $sender = null): SendSmsResponse
-    {
+    public function sendTemplate(
+        iterable|string|int|PhoneNumber $recipients,
+        Template|string $template,
+        array $parameters = [],
+        ?string $sender = null,
+    ): SendSmsResponse {
         $body = $this->template($template)->render($parameters);
         $message = $this->message($recipients, $body, $sender);
 
@@ -126,7 +110,7 @@ final class Taqnyat implements SmsSender
      *
      * @throws TaqnyatException
      */
-    public function message($recipients, string $body, ?string $sender = null): SmsMessage
+    public function message(iterable|string|int|PhoneNumber $recipients, string $body, ?string $sender = null): SmsMessage
     {
         $senderName = $this->resolveSenderName($sender);
 
@@ -170,27 +154,15 @@ final class Taqnyat implements SmsSender
     /**
      * Returns a Template instance as is, or looks a template up by name in config("taqnyat.templates").
      *
-     * @param Template|string|mixed $template
-     *
      * @throws InvalidArgumentException when the template is not registered
      */
-    public function template($template): Template
+    public function template(Template|string $template): Template
     {
         if ($template instanceof Template) {
             return $template;
         }
 
-        if (is_string($template)) {
-            return $this->templates->get($template);
-        }
-
-        $message = sprintf(
-            'Template must be a template name or an instance of %s, %s given.',
-            Template::class,
-            is_object($template) ? get_class($template) : gettype($template),
-        );
-
-        throw new InvalidArgumentException($message);
+        return $this->templates->get($template);
     }
 
     public function templates(): TemplateRegistry

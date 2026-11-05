@@ -12,12 +12,9 @@ use Sevaske\LaravelTaqnyat\Exceptions\ConfigurationException;
  */
 final class TaqnyatConfig
 {
-    private Repository $config;
-
-    public function __construct(Repository $config)
-    {
-        $this->config = $config;
-    }
+    public function __construct(
+        private readonly Repository $config,
+    ) {}
 
     /**
      * @throws ConfigurationException when the token is not set
@@ -125,10 +122,7 @@ final class TaqnyatConfig
         return (float) $value;
     }
 
-    /**
-     * @return mixed
-     */
-    private function get(string $key)
+    private function get(string $key): mixed
     {
         return $this->config->get('taqnyat.' . $key);
     }

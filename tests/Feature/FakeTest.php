@@ -10,6 +10,7 @@ use Sevaske\LaravelTaqnyat\Tests\TestCase;
 use Sevaske\Taqnyat\Contracts\SmsSender;
 use Sevaske\Taqnyat\Exception\AuthenticationException;
 use Sevaske\Taqnyat\Message\SmsMessage;
+use Sevaske\Taqnyat\Response\SendSmsResponse;
 
 final class FakeTest extends TestCase
 {
@@ -31,11 +32,21 @@ final class FakeTest extends TestCase
             return $message->getBody() === 'Your code is 99';
         });
         $sms->assertNotSentTo('966533333333');
-        $sms->assertNotSent(static function (SmsMessage $message): bool {
-            return $message->getSender() !== 'DefaultSender';
-        });
+        $sms->assertNotSent(static fn(SmsMessage $message): bool => $message->getSender() !== 'DefaultSender');
         self::assertCount(1, $sms->sentTo('966500000000'));
         self::assertCount(2, $sms->sent());
+    }
+
+    public function testFacadeCanBeMocked(): void
+    {
+        $response = SendSmsResponse::fromArray(['messageId' => '42']);
+
+        Taqnyat::shouldReceive('sendText')
+            ->once()
+            ->with('966500000000', 'Hello')
+            ->andReturn($response);
+
+        self::assertSame($response, Taqnyat::sendText('966500000000', 'Hello'));
     }
 
     public function testFakeReplacesTheSmsSenderContract(): void

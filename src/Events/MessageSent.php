@@ -12,13 +12,8 @@ use Sevaske\Taqnyat\Response\SendSmsResponse;
  */
 final class MessageSent
 {
-    public SmsMessage $message;
-
-    public SendSmsResponse $response;
-
-    public function __construct(SmsMessage $message, SendSmsResponse $response)
-    {
-        $this->message = $message;
-        $this->response = $response;
-    }
+    public function __construct(
+        public readonly SmsMessage $message,
+        public readonly SendSmsResponse $response,
+    ) {}
 }

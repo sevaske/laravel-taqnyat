@@ -80,12 +80,11 @@ final class FakeSmsSender implements SmsSender
     /**
      * Recorded messages addressed to the given phone number (any format accepted by PhoneNumber).
      *
-     * @param string|int|PhoneNumber                 $phoneNumber
      * @param (callable(SmsMessage): bool)|null $callback
      *
      * @return list<SmsMessage>
      */
-    public function sentTo($phoneNumber, ?callable $callback = null): array
+    public function sentTo(string|int|PhoneNumber $phoneNumber, ?callable $callback = null): array
     {
         $number = PhoneNumber::from($phoneNumber)->toString();
 
@@ -113,10 +112,9 @@ final class FakeSmsSender implements SmsSender
     }
 
     /**
-     * @param string|int|PhoneNumber                 $phoneNumber
      * @param (callable(SmsMessage): bool)|null $callback
      */
-    public function assertSentTo($phoneNumber, ?callable $callback = null): void
+    public function assertSentTo(string|int|PhoneNumber $phoneNumber, ?callable $callback = null): void
     {
         $number = PhoneNumber::from($phoneNumber)->toString();
 
@@ -126,10 +124,7 @@ final class FakeSmsSender implements SmsSender
         );
     }
 
-    /**
-     * @param string|int|PhoneNumber $phoneNumber
-     */
-    public function assertNotSentTo($phoneNumber): void
+    public function assertNotSentTo(string|int|PhoneNumber $phoneNumber): void
     {
         $number = PhoneNumber::from($phoneNumber)->toString();
 

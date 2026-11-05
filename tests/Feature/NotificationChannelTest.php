@@ -29,9 +29,7 @@ final class NotificationChannelTest extends TestCase
 
     public function testSendsStringMessageToNotifiableRoute(): void
     {
-        (new User('+966500000000'))->notify(new SmsNotification(static function (): string {
-            return 'Your order has shipped';
-        }));
+        (new User('+966500000000'))->notify(new SmsNotification(static fn(): string => 'Your order has shipped'));
 
         $this->sms->assertSentTo('966500000000', static function (SmsMessage $message): bool {
             return $message->getBody() === 'Your order has shipped'
@@ -41,9 +39,7 @@ final class NotificationChannelTest extends TestCase
 
     public function testChannelClassCanBeUsedInVia(): void
     {
-        (new User('966500000000'))->notify(new SmsNotification(static function (): string {
-            return 'Hello';
-        }, TaqnyatChannel::class));
+        (new User('966500000000'))->notify(new SmsNotification(static fn(): string => 'Hello', TaqnyatChannel::class));
 
         $this->sms->assertSentCount(1);
     }
@@ -83,9 +79,7 @@ final class NotificationChannelTest extends TestCase
 
     public function testOnDemandNotificationByChannelNameOrClass(): void
     {
-        $notification = new SmsNotification(static function (): string {
-            return 'On demand';
-        });
+        $notification = new SmsNotification(static fn(): string => 'On demand');
 
         Notification::route('taqnyat', '966500000000')->notify($notification);
         Notification::route(TaqnyatChannel::class, '966511111111')->notify($notification);
@@ -107,9 +101,7 @@ final class NotificationChannelTest extends TestCase
 
     public function testNotifiableWithoutPhoneNumberIsSkipped(): void
     {
-        (new User(null))->notify(new SmsNotification(static function (): string {
-            return 'Nobody receives this';
-        }));
+        (new User(null))->notify(new SmsNotification(static fn(): string => 'Nobody receives this'));
 
         $this->sms->assertNothingSent();
     }
@@ -119,9 +111,7 @@ final class NotificationChannelTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('toTaqnyat() must return a string');
 
-        (new User('966500000000'))->notify(new SmsNotification(static function (): array {
-            return ['not a message'];
-        }));
+        (new User('966500000000'))->notify(new SmsNotification(static fn(): array => ['not a message']));
     }
 
     public function testNotificationWithoutToTaqnyatIsReported(): void
