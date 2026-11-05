@@ -1,6 +1,6 @@
 {
     "name": "sevaske/laravel-taqnyat-tools-pint",
-    "description": "Isolated Laravel Pint install: Pint requires PHP 8.3+, while the package supports PHP 7.4+.",
+    "description": "Isolated Laravel Pint install: Pint requires PHP 8.3+, while the package supports PHP 8.1+.",
     "type": "project",
     "license": "MIT",
     "require": {

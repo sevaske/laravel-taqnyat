@@ -18,4 +18,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Taqnyat::fake()` with assertions and failure simulation.
 - `MessageSending` and `MessageSent` events.
 - Artisan commands: `taqnyat:send`, `taqnyat:balance`, `taqnyat:senders`, `taqnyat:status`.
-- Support for Laravel 8 – 13 and PHP 7.4 – 8.5.
+- Support for Laravel 10 – 13 and PHP 8.1 – 8.5.

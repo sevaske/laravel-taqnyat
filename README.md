@@ -12,7 +12,7 @@ built on top of the framework-agnostic [`sevaske/taqnyat-api`](https://github.co
 - Notification channel: send notifications as SMS
 - `Taqnyat::fake()` with assertions for your tests
 - Events, artisan commands (`taqnyat:send`, `taqnyat:balance`, `taqnyat:senders`, `taqnyat:status`)
-- Laravel 8 – 13, PHP 7.4 – 8.5
+- Laravel 10 – 13, PHP 8.1 – 8.5
 
 > This is an unofficial, community-maintained package and is not affiliated with Taqnyat.
 
